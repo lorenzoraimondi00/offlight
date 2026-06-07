@@ -24,11 +24,16 @@ import {
 } from "lucide-react";
 import { categoriesData, allEventsData } from "./data";
 import { PassionDetails } from "./types";
+import { countries } from "./countriesData";
 
 export default function App() {
   // Navigation & Page State (Exploring realms)
   const [selectedCategory, setSelectedCategory] = useState<PassionDetails | null>(null);
   const [experienceSearch, setExperienceSearch] = useState("");
+
+  // Country selector search & open states
+  const [countrySearch, setCountrySearch] = useState("");
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
 
   // Premium Founding Member Application State
   const [isApplicationOpen, setIsApplicationOpen] = useState(false);
@@ -37,7 +42,7 @@ export default function App() {
     lastName: "",
     email: "",
     country: "",
-    dialingCode: "+1",
+    dialingCode: "",
     phoneNumber: "",
     ageRange: "25-34",
     hearOption: "Instagram",
@@ -160,6 +165,26 @@ export default function App() {
       }, 100);
     }
   }, [selectedCategory]);
+
+  // Handle clicking outside country dropdown to close it
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      const container = document.getElementById("country-selector-container");
+      if (container && !container.contains(e.target as Node)) {
+        setIsCountryDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
+  // Filter countries based on search query for custom selector
+  const filteredCountries = countries.filter(c =>
+    c.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
+    c.code.includes(countrySearch)
+  );
 
   // Filter categories based on search query
   const filteredCategories = categoriesData.filter(category => {
@@ -389,8 +414,9 @@ export default function App() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {filteredEventsOfCategory.map((event) => {
                         const eventName = getDisplayName(event.name);
-                        const subject = `Offlight Experience Inquiry — ${eventName}`;
-                        const mailtoUrl = `mailto:hello@weareofflight.com?subject=${encodeURIComponent(subject)}&body=I%20am%20interested%20in%20requesting%20information%252520and%252520exclusive%252520access%252520details%252520for%252520the%252520${encodeURIComponent(eventName)}%252520experience.`;
+                        const subject = `Offlight Experience Information — ${eventName}`;
+                        const body = `Hi Offlight,\n\nI would like to receive more information about ${eventName}.\n\nThank you.`;
+                        const mailtoUrl = `mailto:hello@weareofflight.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                         return (
                           <motion.div
                             key={event.id}
@@ -458,32 +484,49 @@ export default function App() {
                   <div className="w-12 h-[1px] bg-tertiary mx-auto"></div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left pt-6">
                   
                   {/* Promise Card 1 */}
                   <div className="space-y-4 border border-white/5 bg-surface-container p-6 relative">
-                    <Crown className="w-6 h-6 text-tertiary" />
-                    <h4 className="font-serif text-lg font-medium text-on-background">Maximum Exclusivity</h4>
+                    <Compass className="w-6 h-6 text-tertiary" />
+                    <h4 className="font-serif text-lg font-medium text-on-background">Comfort</h4>
                     <p className="text-xs text-on-background/60 font-light leading-relaxed">
-                      Small curated cohort groups of elite minds, limit-tested to guarantee seamless camaraderie and safety. We reject mass tourism cliques in absolute favor of true privacy.
+                      A well-chosen place to stay, good food and enough time to enjoy where you are.
+                      <br /><br />
+                      The experience begins long before the event itself.
                     </p>
                   </div>
 
                   {/* Promise Card 2 */}
                   <div className="space-y-4 border border-white/5 bg-surface-container p-6 relative">
                     <Shield className="w-6 h-6 text-tertiary" />
-                    <h4 className="font-serif text-lg font-medium text-on-background">Professional Media Team</h4>
+                    <h4 className="font-serif text-lg font-medium text-on-background">Safety</h4>
                     <p className="text-xs text-on-background/60 font-light leading-relaxed">
-                      Accompanied by award-winning cinematographers and aerial coordinates units to document every iconic millisecond quietly, leaving you to focus cleanly on standard immersion.
+                      Carefully considered logistics and trusted local partners.
+                      <br /><br />
+                      So everything feels effortless, even when it isn't.
                     </p>
                   </div>
 
                   {/* Promise Card 3 */}
                   <div className="space-y-4 border border-white/5 bg-surface-container p-6 relative">
-                    <Award className="w-6 h-6 text-tertiary" />
-                    <h4 className="font-serif text-lg font-medium text-on-background">Ultimate Comfort</h4>
+                    <Camera className="w-6 h-6 text-tertiary" />
+                    <h4 className="font-serif text-lg font-medium text-on-background">Memories</h4>
                     <p className="text-xs text-on-background/60 font-light leading-relaxed">
-                      Luxury lodging and high-class local culinary pairings curated manually by Michelin inspectors and localized private travel experts. No standard agents or checklists.
+                      Professional photography and videography throughout the journey.
+                      <br /><br />
+                      Less time behind a screen. More time in the moment.
+                    </p>
+                  </div>
+
+                  {/* Promise Card 4 */}
+                  <div className="space-y-4 border border-white/5 bg-surface-container p-6 relative">
+                    <Globe className="w-6 h-6 text-tertiary" />
+                    <h4 className="font-serif text-lg font-medium text-on-background">Iconography</h4>
+                    <p className="text-xs text-on-background/60 font-light leading-relaxed">
+                      Every experience is shaped by the culture, traditions and atmosphere that make it unique.
+                      <br /><br />
+                      Not just attending the event, but understanding what makes it special.
                     </p>
                   </div>
 
@@ -618,45 +661,95 @@ export default function App() {
                           className="w-full bg-neutral-900 border border-white/10 px-4 py-3 text-sm focus:border-tertiary focus:outline-none transition-colors text-on-background rounded-none placeholder:text-white/20"
                         />
                       </div>
-                      <div>
+                      <div id="country-selector-container" className="md:col-span-2 relative">
                         <label className="block text-[10px] uppercase tracking-wider text-on-background/50 font-bold mb-2">Country of Residence</label>
+                        <button
+                          type="button"
+                          onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+                          className="w-full bg-neutral-900 border border-white/10 px-4 py-3 text-sm text-left text-on-background focus:border-tertiary focus:outline-none transition-colors rounded-none flex items-center justify-between"
+                        >
+                          <span>
+                            {applicationForm.country ? (
+                              <span className="flex items-center gap-2">
+                                <span className="text-base select-none">
+                                  {countries.find(c => c.name === applicationForm.country)?.flag}
+                                </span>
+                                <span>{applicationForm.country}</span>
+                              </span>
+                            ) : (
+                              <span className="text-white/20">Select your country...</span>
+                            )}
+                          </span>
+                          <span className="text-[10px] text-white/40">▼</span>
+                        </button>
+
+                        {isCountryDropdownOpen && (
+                          <div className="absolute left-0 right-0 top-full mt-1 bg-neutral-900 border border-white/15 z-[110] shadow-xl flex flex-col rounded-none overflow-hidden max-h-72">
+                            <div className="p-2 border-b border-white/5 bg-neutral-950">
+                              <input
+                                type="text"
+                                autoFocus
+                                placeholder="Type to search country or code..."
+                                value={countrySearch}
+                                onChange={(e) => setCountrySearch(e.target.value)}
+                                className="w-full bg-neutral-900 border border-white/10 px-3 py-2 text-xs text-on-background focus:border-tertiary focus:outline-none placeholder:text-white/20 rounded-none font-mono"
+                              />
+                            </div>
+                            <div className="overflow-y-auto flex-grow max-h-52 select-none">
+                              {filteredCountries.map((c) => (
+                                <button
+                                  key={c.name}
+                                  type="button"
+                                  onClick={() => {
+                                    setApplicationForm(prev => ({
+                                      ...prev,
+                                      country: c.name,
+                                      dialingCode: c.code
+                                    }));
+                                    setIsCountryDropdownOpen(false);
+                                    setCountrySearch("");
+                                  }}
+                                  className="w-full text-left px-4 py-3 text-sm hover:bg-tertiary/15 hover:text-tertiary transition-all flex items-center justify-between border-b border-white/5 last:border-0 rounded-none cursor-pointer"
+                                >
+                                  <span className="flex items-center gap-2">
+                                    <span className="text-base">{c.flag}</span>
+                                    <span>{c.name}</span>
+                                  </span>
+                                  <span className="text-xs font-mono text-on-background/40">{c.code}</span>
+                                </button>
+                              ))}
+                              {filteredCountries.length === 0 && (
+                                <div className="p-4 text-center text-xs text-on-background/40 font-light font-mono">
+                                  No matches found.
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] uppercase tracking-wider text-on-background/50 font-bold mb-2">Dialing Code</label>
                         <input
                           type="text"
                           required
-                          value={applicationForm.country}
-                          onChange={(e) => setApplicationForm({ ...applicationForm, country: e.target.value })}
-                          placeholder="e.g. Italy"
+                          placeholder="e.g. +39"
+                          value={applicationForm.dialingCode}
+                          onChange={(e) => setApplicationForm({ ...applicationForm, dialingCode: e.target.value })}
                           className="w-full bg-neutral-900 border border-white/10 px-4 py-3 text-sm focus:border-tertiary focus:outline-none transition-colors text-on-background rounded-none placeholder:text-white/20"
                         />
                       </div>
+
                       <div>
                         <label className="block text-[10px] uppercase tracking-wider text-on-background/50 font-bold mb-2">Phone Number</label>
-                        <div className="flex gap-2">
-                          <select
-                            value={applicationForm.dialingCode}
-                            onChange={(e) => setApplicationForm({ ...applicationForm, dialingCode: e.target.value })}
-                            className="bg-neutral-900 border border-white/10 px-3 py-3 text-sm text-on-background focus:border-tertiary focus:outline-none rounded-none w-24"
-                          >
-                            <option value="+1">+1 (US)</option>
-                            <option value="+44">+44 (UK)</option>
-                            <option value="+33">+33 (FR)</option>
-                            <option value="+39">+39 (IT)</option>
-                            <option value="+41">+41 (CH)</option>
-                            <option value="+81">+81 (JP)</option>
-                            <option value="+49">+49 (DE)</option>
-                            <option value="+86">+86 (CN)</option>
-                            <option value="+971">+971 (AE)</option>
-                            <option value="+61">+61 (AU)</option>
-                          </select>
-                          <input
-                            type="tel"
-                            required
-                            value={applicationForm.phoneNumber}
-                            onChange={(e) => setApplicationForm({ ...applicationForm, phoneNumber: e.target.value })}
-                            placeholder="392 123 4567"
-                            className="flex-grow bg-neutral-900 border border-white/10 px-4 py-3 text-sm focus:border-tertiary focus:outline-none transition-colors text-on-background rounded-none placeholder:text-white/20"
-                          />
-                        </div>
+                        <input
+                          type="tel"
+                          required
+                          value={applicationForm.phoneNumber}
+                          onChange={(e) => setApplicationForm({ ...applicationForm, phoneNumber: e.target.value })}
+                          placeholder="e.g. 123456789"
+                          className="w-full bg-neutral-900 border border-white/10 px-4 py-3 text-sm focus:border-tertiary focus:outline-none transition-colors text-on-background rounded-none placeholder:text-white/20"
+                        />
                       </div>
                     </div>
                   </div>
