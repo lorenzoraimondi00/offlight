@@ -1,0 +1,6 @@
+{
+  "name": "OFFLIGHT",
+  "description": "Discover and curate the world's most iconic experiences, with the help of our high-end AI Concierge.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
