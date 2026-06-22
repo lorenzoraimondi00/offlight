@@ -1,44 +1,55 @@
-export interface WaitlistMember {
-  name: string;
-  city: string;
-  country: string;
-  passion: string;
-  position: number;
-  joinedAt: string;
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+export type ViewPage = 
+  | 'home' 
+  | 'expeditions' 
+  | 'playbooks' 
+  | 'studio' 
+  | 'membership' 
+  | 'field-tested' 
+  | 'local-knowledge' 
+  | 'offlight-mode' 
+  | 'curated-memories';
+
+export interface Expedition {
+  id: string;
+  category: 'Ice' | 'Sand' | 'Islands' | 'Waves' | 'Mirrors' | 'Corals' | 'Peaks' | 'Wildlife' | 'Foliage';
+  title: string;
+  location: string;
+  date: string;
+  image: string;
+  isComingSoon?: boolean;
+  description: string;
+  highlights: string[];
 }
 
-export interface WaitlistStats {
-  users: WaitlistMember[];
-  totalCount: number;
-  passionCounts: Record<string, number>;
-}
-
-export interface PassionDetails {
+export interface Playbook {
   id: string;
   title: string;
-  tagline: string;
+  category: string;
+  price: number; // 0 for free
+  image: string;
   description: string;
-  imageUrl: string;
-  highlights: {
-    title: string;
-    description: string;
-    location: string;
-    vibe: string;
-  }[];
+  features: string[];
 }
 
-export interface Message {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  timestamp: string;
-}
-
-export interface CustomJourney {
-  id: string;
+export interface Benefit {
   title: string;
   description: string;
-  passion: string;
-  itinerary: string;
-  createdOn: string;
+  icon: string;
+}
+
+export interface ContactSubmission {
+  firstName: string;
+  lastName: string;
+  age: string;
+  nationality: string;
+  email: string;
+  countryCode: string;
+  phone: string;
+  interests: string[];
+  reference: string;
 }
