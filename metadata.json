@@ -1,0 +1,6 @@
+{
+  "name": "Offlight",
+  "description": "Premium travel brand website focused on meaningful experiences, extraordinary landscapes, and authentic human connection.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
