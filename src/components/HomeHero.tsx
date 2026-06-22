@@ -38,8 +38,8 @@ export default function HomeHero({ onNavigate, onScrollToContact }: HomeHeroProp
 
           <div className="space-y-4">
             <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-black tracking-tight text-white leading-[0.95] text-shadow-lg">
-              LIVE THE PLACES.<br />
-              <span className="text-white/60">LIVE THE MOMENTS.</span>
+              LIVE PLACES.<br />
+              <span className="text-white/60">LIVE MOMENTS.</span>
             </h1>
           </div>
 

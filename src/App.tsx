@@ -20,9 +20,92 @@ import StudioView from './components/StudioView';
 import MembershipView from './components/MembershipView';
 import EditorialPages from './components/EditorialPages';
 
+export const METADATA_BY_PAGE: Record<ViewPage, { title: string; description: string }> = {
+  home: {
+    title: 'OFFLIGHT | Live Places. Live Moments.',
+    description: 'Field-tested expeditions, destination playbooks and custom travel design for travelers who want to experience the world more deeply.'
+  },
+  expeditions: {
+    title: 'Field-Tested Expeditions | OFFLIGHT',
+    description: 'Discover our field-tested expeditions designed for travelers who seek authentic landscapes, local wisdom, and true presence.'
+  },
+  playbooks: {
+    title: 'Destination Playbooks | OFFLIGHT',
+    description: 'Detailed, independent documentation of remote and offlight-approved destinations around the globe.'
+  },
+  studio: {
+    title: 'Custom Travel Design Studio | OFFLIGHT',
+    description: 'Bespoke travel design for highly independent travelers looking for custom curation, planning, and off-grid guidance.'
+  },
+  membership: {
+    title: 'Membership Council | OFFLIGHT',
+    description: 'Join an active community of explorers. Access exclusive travel design services, expedition seats, and unique destination playbooks.'
+  },
+  'field-tested': {
+    title: 'Field-Tested Philosophy | OFFLIGHT',
+    description: 'Every path we recommend has been traveled by our hosts. Read our philosophy of genuine experience and careful verification.'
+  },
+  'local-knowledge': {
+    title: 'Local Knowledge Philosophy | OFFLIGHT',
+    description: 'Authentic relationships and deep visual essays highlighting remote, slow-travel coastal, and alpine communities.'
+  },
+  'offlight-mode': {
+    title: 'Offlight Mode | OFFLIGHT',
+    description: 'Unlocking real presence. Our core practice of disconnecting from immediate digital noise to fully live the spaces and moments.'
+  },
+  'curated-memories': {
+    title: 'Curated Memories | OFFLIGHT',
+    description: 'Return home with meaningful, professionally documented stories. Enjoy professional photography and analogue equipment in every journey.'
+  }
+};
+
 export default function App() {
   const [page, setPage] = useState<ViewPage>('home');
   const [transitioning, setTransitioning] = useState(false);
+
+  // Dynamic SEO Metadata management
+  useEffect(() => {
+    const meta = METADATA_BY_PAGE[page] || METADATA_BY_PAGE.home;
+    document.title = meta.title;
+
+    // Helper to update or create meta tags
+    const updateOrCreateMeta = (attrName: string, attrValue: string, content: string) => {
+      let element = document.querySelector(`meta[${attrName}="${attrValue}"]`);
+      if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute(attrName, attrValue);
+        document.head.appendChild(element);
+      }
+      element.setAttribute('content', content);
+    };
+
+    // Helper to update canonical link
+    const updateOrCreateCanonical = (url: string) => {
+      let element = document.querySelector('link[rel="canonical"]');
+      if (!element) {
+        element = document.createElement('link');
+        element.setAttribute('rel', 'canonical');
+        document.head.appendChild(element);
+      }
+      element.setAttribute('href', url);
+    };
+
+    const pageUrl = page === 'home' ? 'https://weareofflight.com/' : `https://weareofflight.com/#/${page}`;
+
+    // Standard SEO
+    updateOrCreateMeta('name', 'description', meta.description);
+    updateOrCreateCanonical(pageUrl);
+
+    // Open Graph
+    updateOrCreateMeta('property', 'og:title', meta.title);
+    updateOrCreateMeta('property', 'og:description', meta.description);
+    updateOrCreateMeta('property', 'og:url', pageUrl);
+
+    // Twitter
+    updateOrCreateMeta('name', 'twitter:title', meta.title);
+    updateOrCreateMeta('name', 'twitter:description', meta.description);
+    updateOrCreateMeta('name', 'twitter:url', pageUrl);
+  }, [page]);
 
   // Hash-based simple reactive routing
   useEffect(() => {
